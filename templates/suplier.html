@@ -1,0 +1,163 @@
+{% extends 'base.html' %}
+{% block title %} Master Suplier {% endblock %}
+{% block body %}
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <h1>
+        Master
+        <small>Suplier</small>
+      </h1>
+      <ol class="breadcrumb">
+        <li><a href="/"><i class="fa fa-dashboard"></i> Dashboard</a></li>
+        <li class="active">Master Suplier</li>
+      </ol>
+    </section>
+  
+    <!-- Main content -->
+    <section class="content">
+      <!-- Small boxes (Stat box) -->
+      <div class="row">
+        <div class="col-md-12 col-xs-12">
+            {% with messages = get_flashed_messages() %}
+            {% if messages %}
+            {% for message in messages %}
+            <div class="alert alert-success alert-dismissible" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                {{message}}
+            </div>
+            {% endfor %}
+            {% endif %}
+            {% endwith %}
+          <div id="messages"></div>
+            <button class="btn btn-primary" data-toggle="modal" data-target="#addModal">Tambah Data</button>
+            <br /> <br />
+  
+          <div class="box">
+            <div class="box-header">
+              <h3 class="box-title">Kelola Suplier</h3>
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body">
+              <table id="manageTable" class="table table-bordered table-striped">
+                <thead>
+                  <tr>
+                    <th style="width: 10px">No</th>
+                    <th>Nama</th>
+                    <th>Telepon</th>
+                    <th>Alamat</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    {% for sp in data %}
+                    <tr>
+                        <td>{{ loop.index }}</td>
+                        <td>{{ sp.1}}</td>
+                        <td>{{ sp.2}}</td>
+                        <td>{{ sp.3}}</td>
+                        <td>
+                            <a href="" class="btn btn-default" data-toggle="modal" data-target="#editModal{{sp.0}}"><i class="fa fa-pencil"></i></a>
+                            <a href="/hapussuplier/{{sp.0}}" class="btn btn-default" onclick="return confirm('Apakah Anda Yakin Menghapus Data Suplier ?')"><i class="fa fa-trash"></i></a>
+                        </td>
+                    </tr>
+                    <!-- edit modal -->
+                    <div class="modal fade" role="dialog" id="editModal{{sp.0}}">
+                        <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title">Ubah Suplier</h4>
+                            </div>
+                    
+                            <form role="form" action="{{url_for('ubahsuplier')}}" method="post">
+                    
+                            <div class="modal-body">
+                                
+                                <div class="form-group">
+                                <label for="nama">Nama</label>
+                                <input type="hidden" name="id" value="{{sp.0}}">
+                                <input type="text" class="form-control" id="nama" name="nama" placeholder="Masukan Nama Suplier" value="{{sp.1}}" autocomplete="off">
+                                </div>
+                                <div class="form-group">
+                                <label for="telepon">Telepon</label>
+                                <input type="text" class="form-control" id="telepon" name="telepon" placeholder="Masukan Nomor Telepon Suplier" value="{{sp.2}}" autocomplete="off">
+                                </div>
+                                <div class="form-group">
+                                <label for="alamat">Alamat</label>
+                                <input type="text" class="form-control" id="alamat" name="alamat" placeholder="Masukan Alamat Suplier" value="{{sp.3}}" autocomplete="off">
+                                </div>
+                            </div>
+                    
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Keluar</button>
+                                <button type="submit" class="btn btn-primary">Ubah</button>
+                            </div>
+                    
+                            </form>
+                        </div><!-- /.modal-content -->
+                        </div><!-- /.modal-dialog -->
+                    </div><!-- /.modal -->
+                    {% endfor %}
+                </tbody>
+              </table>
+            </div>
+            <!-- /.box-body -->
+          </div>
+          <!-- /.box -->
+        </div>
+        <!-- col-md-12 -->
+      </div>
+      <!-- /.row -->
+    </section>
+    <!-- /.content -->
+  </div>
+  <!-- /.content-wrapper -->
+
+    <!-- add modal -->
+    <div class="modal fade" role="dialog" id="addModal">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <h4 class="modal-title">Tambah Suplier</h4>
+            </div>
+    
+            <form role="form" action="{{url_for('tambahsuplier')}}" method="post">
+    
+              <div class="modal-body">
+                <div class="form-group">
+                  <label for="nama">Nama</label>
+                  <input type="text" class="form-control" id="nama" name="nama" placeholder="Masukan Nama Suplier" autocomplete="off">
+                </div>
+                <div class="form-group">
+                  <label for="telepon">Telepon</label>
+                  <input type="text" class="form-control" id="telepon" name="telepon" placeholder="Masukan Nomor Telepon Suplier" autocomplete="off">
+                </div>
+                <div class="form-group">
+                  <label for="alamat">Alamat</label>
+                  <input type="text" class="form-control" id="alamat" name="alamat" placeholder="Masukan Alamat Suplier" autocomplete="off">
+                </div>
+              </div>
+    
+              <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Keluar</button>
+                <button type="submit" class="btn btn-primary">Tambah</button>
+              </div>
+    
+            </form>
+          </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+      </div><!-- /.modal -->
+{% endblock %}  
+{% block js %}
+<script type="text/javascript">  
+  
+    $(document).ready(function() {
+      $('#masterMainNav').addClass('active');
+      $("#suplierSubNav").addClass('active');
+      // initialize the datatable 
+      manageTable = $('#manageTable').DataTable();
+    });
+</script>
+{% endblock %}

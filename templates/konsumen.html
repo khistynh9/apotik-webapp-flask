@@ -1,0 +1,164 @@
+{% extends 'base.html' %}
+{% block title %} Master Konsumen {% endblock %}
+{% block body %}
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <h1>
+        Master
+        <small>Konsumen</small>
+      </h1>
+      <ol class="breadcrumb">
+        <li><a href="/"><i class="fa fa-dashboard"></i> Dashboard</a></li>
+        <li class="active">Master Konsumen</li>
+      </ol>
+    </section>
+  
+    <!-- Main content -->
+    <section class="content">
+      <!-- Small boxes (Stat box) -->
+      <div class="row">
+        <div class="col-md-12 col-xs-12">
+            {% with messages = get_flashed_messages() %}
+            {% if messages %}
+            {% for message in messages %}
+            <div class="alert alert-success alert-dismissible" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                {{message}}
+            </div>
+            {% endfor %}
+            {% endif %}
+            {% endwith %}
+          <div id="messages"></div>
+            <button class="btn btn-primary" data-toggle="modal" data-target="#addModal">Tambah Data</button>
+            <br /> <br />
+  
+          <div class="box">
+            <div class="box-header">
+              <h3 class="box-title">Kelola Konsumen</h3>
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body">
+              <table id="manageTable" class="table table-bordered table-striped">
+                <thead>
+                  <tr>
+                    <th style="width: 10px">No</th>
+                    <th>Nama</th>
+                    <th>No HP</th>
+                    <th>Alamat</th>
+                    <th>Aksi</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    {% for ks in data %}
+                    <tr>
+                        <td>{{ loop.index }}</td>
+                        <td>{{ ks.1}}</td>
+                        <td>{{ ks.2}}</td>
+                        <td>{{ ks.3}}</td>
+                        <td>
+                            <a href="" class="btn btn-default" data-toggle="modal" data-target="#editModal{{ks.0}}"><i class="fa fa-pencil"></i></a>
+                            <a href="/hapuskonsumen/{{ks.0}}" class="btn btn-default" onclick="return confirm('Apakah Anda Yakin Menghapus Data Konsumen ?')"><i class="fa fa-trash"></i></a>
+                        </td>
+                    </tr>
+                    <!-- edit modal -->
+                    <div class="modal fade" role="dialog" id="editModal{{ks.0}}">
+                        <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title">Ubah Konsumen</h4>
+                            </div>
+                    
+                            <form role="form" action="{{url_for('ubahkonsumen')}}" method="post">
+                    
+                            <div class="modal-body">
+                                
+                                <div class="form-group">
+                                <label for="nama">Nama</label>
+                                <input type="hidden" name="id" value="{{ks.0}}">
+                                <input type="text" class="form-control" id="nama" name="nama" placeholder="Masukan Nama Konsumen" value="{{ks.1}}" autocomplete="off">
+                                </div>
+                                <div class="form-group">
+                                <label for="no_hp">No HP</label>
+                                <input type="text" class="form-control" id="no_hp" name="no_hp" placeholder="Masukan Nomor HP Konsumen" value="{{ks.2}}" autocomplete="off">
+                                </div>
+                                <div class="form-group">
+                                <label for="alamat">Alamat</label>
+                                <input type="text" class="form-control" id="alamat" name="alamat" placeholder="Masukan Alamat Konsumen" value="{{ks.3}}" autocomplete="off">
+                                </div>
+                            </div>
+                    
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Keluar</button>
+                                <button type="submit" class="btn btn-primary">Ubah</button>
+                            </div>
+                    
+                            </form>
+                        </div><!-- /.modal-content -->
+                        </div><!-- /.modal-dialog -->
+                    </div><!-- /.modal -->
+                    {% endfor %}
+                </tbody>
+              </table>
+            </div>
+            <!-- /.box-body -->
+          </div>
+          <!-- /.box -->
+        </div>
+        <!-- col-md-12 -->
+      </div>
+      <!-- /.row -->
+    </section>
+    <!-- /.content -->
+  </div>
+  <!-- /.content-wrapper -->
+
+    <!-- add modal -->
+    <div class="modal fade" role="dialog" id="addModal">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <h4 class="modal-title">Tambah Konsumen</h4>
+            </div>
+    
+            <form role="form" action="{{url_for('tambahkonsumen')}}" method="post">
+    
+              <div class="modal-body">
+                <div class="form-group">
+                  <label for="nama">Nama</label>
+                  <input type="text" class="form-control" id="nama" name="nama" placeholder="Masukan Nama Konsumen" autocomplete="off">
+                </div>
+                <div class="form-group">
+                  <label for="no_hp">No HP</label>
+                  <input type="text" class="form-control" id="no_hp" name="no_hp" placeholder="Masukan Nomor HP Konsumen" autocomplete="off">
+                </div>
+                <div class="form-group">
+                  <label for="alamat">Alamat</label>
+                  <input type="text" class="form-control" id="alamat" name="alamat" placeholder="Masukan Alamat Konsumen" autocomplete="off">
+                </div>
+              </div>
+    
+              <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Keluar</button>
+                <button type="submit" class="btn btn-primary">Tambah</button>
+              </div>
+    
+            </form>
+          </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+      </div><!-- /.modal -->
+{% endblock %}  
+{% block js %}
+<script type="text/javascript">  
+  
+    $(document).ready(function() {
+      $('#masterMainNav').addClass('active');
+      $("#konsumenSubNav").addClass('active');
+      // initialize the datatable 
+      manageTable = $('#manageTable').DataTable();
+    });
+</script>
+{% endblock %}

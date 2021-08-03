@@ -1,0 +1,165 @@
+{% extends 'base.html' %}
+{% block title %} Master Obat {% endblock %}
+{% block body %}
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <h1>
+        Master
+        <small>Obat</small>
+      </h1>
+      <ol class="breadcrumb">
+        <li><a href="/"><i class="fa fa-dashboard"></i> Dashboard</a></li>
+        <li class="active">Master Obat</li>
+      </ol>
+    </section>
+  
+    <!-- Main content -->
+    <section class="content">
+      <!-- Small boxes (Stat box) -->
+      <div class="row">
+        <div class="col-md-12 col-xs-12">
+            {% with messages = get_flashed_messages() %}
+            {% if messages %}
+            {% for message in messages %}
+            <div class="alert alert-success alert-dismissible" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                {{message}}
+            </div>
+            {% endfor %}
+            {% endif %}
+            {% endwith %}
+          <div id="messages"></div>
+            <button class="btn btn-primary" data-toggle="modal" data-target="#addModal">Tambah Data</button>
+            <br /> <br />
+  
+          <div class="box">
+            <div class="box-header">
+              <h3 class="box-title">Kelola Obat</h3>
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body">
+              <table id="manageTable" class="table table-bordered table-striped">
+                <thead>
+                  <tr>
+                    <th style="width: 10px">No</th>
+                    <th>Kode Obat</th>
+                    <th>Nama Obat</th>
+                    <th>Satuan</th>
+                    <th>Stok</th>
+                    <th>Aksi</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    {% for obt in data %}
+                    <tr>
+                        <td>{{ loop.index }}</td>
+                        <td>{{ obt.0}}</td>
+                        <td>{{ obt.1}}</td>
+                        <td>{{ obt.2}}</td>
+                        <td>{{ obt.3}}</td>
+                        <td>
+                            <a href="" class="btn btn-default" data-toggle="modal" data-target="#editModal{{obt.0}}"><i class="fa fa-pencil"></i></a>
+                            <a href="/hapusobat/{{obt.0}}" class="btn btn-default" onclick="return confirm('Apakah Anda Yakin Menghapus Data Obat ?')"><i class="fa fa-trash"></i></a>
+                        </td>
+                    </tr>
+                    <!-- edit modal -->
+                    <div class="modal fade" role="dialog" id="editModal{{obt.0}}">
+                        <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title">Ubah Obat</h4>
+                            </div>
+                    
+                            <form role="form" action="{{url_for('ubahobat')}}" method="post">
+                    
+                            <div class="modal-body">
+                                
+                                <div class="form-group">
+                                <label for="kode">Kode Obat</label>
+                                <input type="text" class="form-control" id="kode" name="kode_obat" placeholder="Masukan Nama Obat" value="{{ obt.0}}" autocomplete="off">
+                                </div>
+                                <div class="form-group">
+                                <label for="nama">Nama Obat</label>
+                                <input type="text" class="form-control" id="nama" name="nama_obat" placeholder="Masukan Nama Obat" value="{{ obt.1}}" autocomplete="off">
+                                </div>
+                                <div class="form-group">
+                                <label for="satuan">Satuan</label>
+                                <input type="text" class="form-control" id="satuan" name="satuan" placeholder="Masukan Satuan Obat" value="{{ obt.2}}" autocomplete="off">
+                                </div>
+                            </div>
+                    
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Keluar</button>
+                                <button type="submit" class="btn btn-primary">Ubah</button>
+                            </div>
+                    
+                            </form>
+                        </div><!-- /.modal-content -->
+                        </div><!-- /.modal-dialog -->
+                    </div><!-- /.modal -->
+                    {% endfor %}
+                </tbody>
+              </table>
+            </div>
+            <!-- /.box-body -->
+          </div>
+          <!-- /.box -->
+        </div>
+        <!-- col-md-12 -->
+      </div>
+      <!-- /.row -->
+    </section>
+    <!-- /.content -->
+  </div>
+  <!-- /.content-wrapper -->
+
+    <!-- add modal -->
+    <div class="modal fade" role="dialog" id="addModal">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <h4 class="modal-title">Tambah Obat</h4>
+            </div>
+    
+            <form role="form" action="{{url_for('tambahobat')}}" method="post">
+    
+              <div class="modal-body">
+                <div class="form-group">
+                  <label for="kode">Kode Obat</label>
+                  <input type="text" class="form-control" id="kode" name="kode_obat" placeholder="Masukan Nama Obat" autocomplete="off">
+                </div>
+                <div class="form-group">
+                  <label for="nama">Nama Obat</label>
+                  <input type="text" class="form-control" id="nama" name="nama_obat" placeholder="Masukan Nama Obat" autocomplete="off">
+                </div>
+                <div class="form-group">
+                  <label for="satuan">Satuan</label>
+                  <input type="text" class="form-control" id="satuan" name="satuan" placeholder="Masukan Satuan Obat" autocomplete="off">
+                </div>
+              </div>
+    
+              <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Keluar</button>
+                <button type="submit" class="btn btn-primary">Tambah</button>
+              </div>
+    
+            </form>
+          </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+      </div><!-- /.modal -->
+{% endblock %}  
+{% block js %}
+<script type="text/javascript">  
+  
+    $(document).ready(function() {
+      $('#masterMainNav').addClass('active');
+      $("#obatSubNav").addClass('active');
+      // initialize the datatable 
+      manageTable = $('#manageTable').DataTable();
+    });
+</script>
+{% endblock %}

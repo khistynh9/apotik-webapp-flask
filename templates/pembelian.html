@@ -1,0 +1,244 @@
+{% extends 'base.html' %}
+{% block title %} Pembelian {% endblock %}
+{% block body %}
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+  <!-- Content Header (Page header) -->
+  <section class="content-header">
+    <h1>
+      Kelola
+      <small>Pembelian</small>
+    </h1>
+    <ol class="breadcrumb">
+      <li><a href="<?php echo base_url('dashboard') ?>"><i class="fa fa-dashboard"></i> Dashboard</a></li>
+      <li class="active">Pembelian</li>
+    </ol>
+  </section>
+
+  <section class="content">
+    <div class="row">
+      <div class="col-md-12 col-xs-12">
+
+        <div id="messages"></div>
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-success alert-dismissible" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            {{message}}
+        </div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+
+        <!-- left column -->
+        <div class="col-md-6">
+          <div class="box box-primary">
+            <div class="box-header with-border">
+              <h3 class="box-title">Tambah Pembelian</h3>
+            </div>
+            <div class="box-body no-margin no-padding">
+              <!-- form start -->
+            <form role="form" action="{{url_for('tambahpembelian')}}" method="post" class="form-horizontal">
+              <div class="box-body">
+                <div class="pull-right">
+                  <div class="form-group">
+                    <label class="col-sm-12 control-label">Tanggal: {{date}}</label>
+                    <input type="hidden" name="date_time" value="{{date}}">
+                  </div>
+                </div>
+                <div class="pull pull-left">
+                  <div class="form-group">
+                    <label for="no_trans" class="col-sm-5 control-label" style="text-align:left;">No Pembelian</label>
+                    <div class="col-sm-7">
+                      <input type="text" class="form-control" name="no_trans" id="no_trans" autocomplete="off">
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label for="suplier" class="col-sm-5 control-label" style="text-align:left;">Suplier</label>
+                    <div class="col-sm-7">
+                      <select class="form-control" id="suplier" name="suplier" class="form-control select_group" required>
+                        <option>Pilih Suplier</option>
+                        {% for suplier in sp %}
+                          <option value="{{suplier.0}}">{{suplier.1}}</option>
+                        {% endfor %}
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                <br /> <br />
+                <table class="table table-bordered" id="product_info_table">
+                  <thead>
+                    <tr>
+                      <th style="width:50%">Nama Obat</th>
+                      <th style="width:20%">Qty</th>
+                      <th style="width:10%"><button type="button" id="add_row" class="btn btn-default"><i class="fa fa-plus"></i></button></th>
+                    </tr>
+                  </thead>
+  
+                  <tbody >
+                    <tr id="row_1">
+                      <td>
+                        <select class="form-control select_group product" data-row-id="row_1" id="product_1" name="product[]" style="width:100%;" onchange="getProductData(1)" required>
+                          <option></option>
+                          {% for obat in ob %}
+                            <option value="{{obat.0}}">{{obat.1}}</option>
+                          {% endfor %}
+                        </select>
+                      </td>
+                      <td><input type="number" name="qty[]" id="qty_1" class="form-control" required onkeyup="getTotal(1)"></td>
+                      <td><button type="button" class="btn btn-default" onclick="removeRow('1')"><i class="fa fa-close"></i></button></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="box-footer">
+                <div class="form-group">
+                  <label for="net_amount" class="col-sm-7 control-label">Total Pembelian</label>
+                  <div class="col-sm-5">
+                    <input type="text" class="form-control" id="net_amount" name="net_amount" disabled autocomplete="off">
+                    <input type="hidden" class="form-control" id="net_amount_value" name="net_amount_value" autocomplete="off">
+                  </div>
+                </div>
+              </div>
+              <div class="box-footer">
+                <button type="submit" class="btn btn-primary">Tambah Pembelian</button>
+              </div>
+            </form>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="box box-primary">
+            <div class="box-header with-border">
+              <h3 class="box-title">Kelola Pembelian</h3>
+            </div>
+            <div class="box-body">
+              <table id="manageTable" class="table table-bordered table-striped">
+                <thead>
+                  <tr>
+                    <th style="width: 10px">No</th>
+                    <th>No Pembelian</th>
+                    <th>Waktu</th>
+                    <th>Jumlah Pembelian</th>
+                    <th>Aksi</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    {% for pb in pb %}  
+                    <tr>
+                        <td>{{ loop.index }}</td>
+                        <td>{{pb.1}}</td>
+                        <td>{{pb.4}}</td>
+                        <td>{{pb.3}}</td>
+                        <td>
+                            <a href="" class="btn btn-default" data-toggle="modal" data-target=""><i class="fa fa-pencil"></i></a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- /.content -->
+</div>
+<!-- /.content-wrapper -->
+{% endblock %}  
+{% block js %}
+<script type="text/javascript">  
+  
+    $(document).ready(function() {
+      $("#suplier").select2();
+      $('#transaksiMainNav').addClass('active');
+      $("#pembelianSubNav").addClass('active');
+      // initialize the datatable 
+      manageTable = $('#manageTable').DataTable();
+      
+        $("#add_row").unbind('click').bind('click', function() {
+        var table = $("#product_info_table");
+        var count_table_tbody_tr = $("#product_info_table tbody tr").length;
+        var row_id = count_table_tbody_tr + 1;
+
+        $.ajax({
+          url: '/dataobat',
+          type: 'post',
+          dataType: 'json',
+          success: function(data) {
+            
+            var html = '<tr id="row_' + row_id + '">' +
+              '<td>' +
+              '<select class="form-control select_group product" data-row-id="' + row_id + '" id="product_' + row_id + '" name="product[]" style="width:100%;" onchange="getProductData(' + row_id + ')" required>' +
+              '<option value=""></option>';
+              data.forEach(u => {
+                  return html += '<option value="' + u[0] + '">' + u[1] + '</option>'; 
+              });           
+            html += '</select>' +
+              '</td>' +
+              '<td><input type="number" name="qty[]" id="qty_' + row_id + '" class="form-control" onkeyup="getTotal(' + row_id + ')"></td>' +
+              '<td><button type="button" class="btn btn-default" onclick="removeRow(\'' + row_id + '\')"><i class="fa fa-close"></i></button></td>' +
+              '</tr>';
+
+            if (count_table_tbody_tr >= 1) {
+              $("#product_info_table tbody tr:last").after(html);
+            } else {
+              $("#product_info_table tbody").html(html);
+            }
+
+            $(".product").select2();
+
+          }
+        });
+
+        return false;
+      });
+    });
+
+    function getProductData(row_id) {
+      var product_id = $("#product_" + row_id).val();
+      if (product_id == "") {
+        $("#qty_" + row_id).val("");
+      } else {
+        $.ajax({
+          url: '/dataobat',
+          type: 'post',
+          data: {
+            product_id: product_id
+          },
+          dataType: 'json',
+          success: function(response) {
+            $("#qty_" + row_id).val(1);
+            $("#qty_value_" + row_id).val(1);
+            getTotal();
+          } // /success
+        }); // /ajax function to fetch the product data 
+      }
+    }
+
+    function getTotal(row = null) {
+        var tableProductLength = $("#product_info_table tbody tr").length;
+        var totalSubAmount = 0;
+        for (x = 0; x < tableProductLength; x++) {
+          var tr = $("#product_info_table tbody tr")[x];
+          var count = $(tr).attr('id');
+          count = count.substring(4);
+
+          totalSubAmount = Number(totalSubAmount) + Number($("#qty_" + count).val());
+        }
+        totalSubAmount = Number(totalSubAmount.toFixed(2));
+        $("#net_amount").val(totalSubAmount);
+        $("#net_amount_value").val(totalSubAmount);
+
+    }
+
+    function removeRow(tr_id) {
+        $("#product_info_table tbody tr#row_" + tr_id).remove();
+        
+    }
+</script>
+{% endblock %}
